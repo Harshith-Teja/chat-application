@@ -5,12 +5,13 @@ const maxAge = 3 * 24 * 60 * 60 * 1000;
 
 export const signup = async (req, res, next) => {
   try {
-    const { email, pwd } = req.body;
+    console.log("req body", req.body);
+    const { email, password } = req.body;
 
-    if (!email || !pwd)
+    if (!email || !password)
       return res.status(400).send("Email and password are required");
 
-    const user = await User.create({ email, pwd });
+    const user = await User.create({ email, password });
 
     const accessToken = jwt.sign(
       { email, userId: user.id },
