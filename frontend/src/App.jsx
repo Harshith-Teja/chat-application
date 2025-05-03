@@ -5,9 +5,9 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import Auth from "./pages/auth";
-import Chat from "./pages/chat";
-import Profile from "./pages/profile";
+import Auth from "./pages/auth/auth.jsx";
+import Chat from "./pages/chat/chat.jsx";
+import Profile from "./pages/profile/profile.jsx";
 
 function App() {
   return (
