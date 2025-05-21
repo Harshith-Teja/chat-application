@@ -19,6 +19,8 @@ const Auth = () => {
   const navigate = useNavigate();
 
   const validateLogin = () => {
+    //validate the credentials
+
     if (!email.length) {
       toast.error("Email is required");
       return false;
@@ -33,6 +35,8 @@ const Auth = () => {
   };
 
   const validateSignup = () => {
+    //validate the credentials
+
     if (!email.length) {
       toast.error("Email is required");
       return false;
@@ -62,7 +66,8 @@ const Auth = () => {
 
       if (response.data.user.id) {
         setUserInfo(response.data.user);
-        if (response.data.user.profileSetup) navigate("/chat");
+        if (response.data.user.profileSetup)
+          navigate("/chat"); //if profile is already setup, move to chat page
         else navigate("/profile");
       }
     }
@@ -79,7 +84,7 @@ const Auth = () => {
 
       if (response.status === 201) {
         setUserInfo(response.data.user);
-        navigate("/profile");
+        navigate("/profile"); //once user is successfully created, move to the profile page to set up profile
       }
     }
   };
