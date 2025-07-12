@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import authRoutes from "./routes/authRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
+import setupSocket from "./socket.js";
 
 dotenv.config();
 
@@ -30,6 +31,8 @@ app.use("/api/contacts", contactRoutes);
 const server = app.listen(port, () => {
   console.log("connected to the server at port:", port);
 });
+
+setupSocket(server);
 
 mongoose
   .connect(mongodbURL)
