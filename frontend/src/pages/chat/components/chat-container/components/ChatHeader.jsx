@@ -1,4 +1,5 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { getColor } from "@/lib/utils";
 import { useAppStore } from "@/store/store";
 import { HOST } from "@/utils/constants";
 import React from "react";
@@ -21,7 +22,9 @@ const ChatHeader = () => {
                 />
               ) : (
                 <div
-                  className={`uppercase h-12 w-12 text-lg border-[1px] flex items-center justify-center text-white rounded-full ${selectedChatData.color}`}
+                  className={`uppercase h-12 w-12 text-lg border-[1px] flex items-center justify-center text-white rounded-full ${getColor(
+                    selectedChatData.color
+                  )}`}
                 >
                   {selectedChatData.firstName
                     ? selectedChatData.firstName.charAt(0)
