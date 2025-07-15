@@ -1,8 +1,10 @@
 import apiClient from "@/lib/api-client";
 import { useAppStore } from "@/store/store";
-import { GET_ALL_MESSAGES_ROUTE } from "@/utils/constants";
+import { GET_ALL_MESSAGES_ROUTE, HOST } from "@/utils/constants";
 import moment from "moment";
 import React, { useEffect, useRef } from "react";
+import { FaFile } from "react-icons/fa";
+import { BsDownload } from "react-icons/bs";
 
 const MessageContainer = () => {
   const scrollRef = useRef();
@@ -47,6 +49,15 @@ const MessageContainer = () => {
     }
   }, [selectedChatMessages]);
 
+  const downloadFile = (file) => {};
+
+  const checkIfImage = (filePath) => {
+    const imageRegex =
+      /\.(jpg|jpeg|png|gif|bmp|tiff|tif|webp|svg|ico|heic|heif)$/i;
+
+    return imageRegex.test(filePath);
+  };
+
   const renderDmMessages = (message) => {
     return (
       <div
@@ -63,6 +74,38 @@ const MessageContainer = () => {
             } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
           >
             {message.content}
+          </div>
+        )}
+        {message.messageType === "file" && (
+          <div
+            className={`${
+              message.sender !== selectedChatData._id
+                ? "bg-[#8417ff]/5 text-[#8417ff] border-[#8417ff]/50"
+                : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20"
+            } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+          >
+            {checkIfImage(message.fileUrl) ? (
+              <div className="cursor-pointer">
+                <img
+                  src={`${HOST}/${message.fileUrl}`}
+                  height={300}
+                  width={300}
+                />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-4">
+                <span className="text-white/8 text-3xl bg-black/20 rounded-full p-3">
+                  <FaFile />
+                </span>
+                <span>{message.fileUrl.split("/").pop()}</span>
+                <span
+                  className="text-white/8 text-2xl bg-black/20 hover:bg-black/50 cursor-pointer transition-all duration-300 rounded-full p-3"
+                  onClick={() => downloadFile(message.fileUrl)}
+                >
+                  <BsDownload />
+                </span>
+              </div>
+            )}
           </div>
         )}
         <div className="text-xs text-gray-600">
