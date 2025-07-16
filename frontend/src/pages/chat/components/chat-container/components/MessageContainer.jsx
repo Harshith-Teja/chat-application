@@ -15,6 +15,8 @@ const MessageContainer = () => {
     userInfo,
     selectedChatMessages,
     setSelectedChatMessages,
+    setIsDownloading,
+    setFileDownloadProgress,
   } = useAppStore();
 
   const [showImage, setShowImage] = useState(false);
@@ -54,18 +56,32 @@ const MessageContainer = () => {
   }, [selectedChatMessages]);
 
   const downloadFile = async (url) => {
-    const response = await apiClient.get(`${HOST}/${url}`, {
-      responseType: "blob",
-    });
+    try {
+      setIsDownloading(true);
+      setFileDownloadProgress(0);
 
-    const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    link.href = urlBlob;
-    link.setAttribute("download", url.split("/").pop());
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.URL.revokeObjectURL(urlBlob);
+      const response = await apiClient.get(`${HOST}/${url}`, {
+        responseType: "blob",
+        onDownloadProgress: (data) => {
+          setFileDownloadProgress(Math.round((100 * data.loaded) / data.total));
+        },
+      });
+
+      if (response.status === 200 && response.data) {
+        setIsDownloading(false);
+        const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = urlBlob;
+        link.setAttribute("download", url.split("/").pop());
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(urlBlob);
+      }
+    } catch (err) {
+      setIsDownloading(false);
+      console.log(err);
+    }
   };
 
   const checkIfImage = (filePath) => {
