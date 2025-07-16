@@ -4,7 +4,7 @@ import NewDM from "./components/NewDM";
 import apiClient from "@/lib/api-client";
 import { GET_DM_CONTACTS_ROUTES } from "@/utils/constants";
 import { useAppStore } from "@/store/store";
-import ContactList from "@/components/ContactList";
+import ContactList from "@/pages/chat/components/contacts-container/components/ContactList";
 
 const ContactsContainer = () => {
   const { directMessagesContacts, setDirectMessagesContacts } = useAppStore();
