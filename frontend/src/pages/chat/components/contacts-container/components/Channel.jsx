@@ -11,25 +11,22 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import Lottie from "react-lottie";
-import { animationDefaultOptions } from "@/lib/utils";
 import apiClient from "@/lib/api-client";
 import {
+  CREATE_CHANNEL_ROUTE,
   GET_ALL_CONTACTS_ROUTES,
   HOST,
   SEARCH_CONTACT_ROUTES,
 } from "@/utils/constants";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useAppStore } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import MultipleSelector from "@/components/ui/multipleselect";
 
 const Channel = () => {
-  const { setSelectedChatType, setSelectedChatData } = useAppStore();
+  const { setSelectedChatType, setSelectedChatData, addChannel } =
+    useAppStore();
   const [newChannelModal, setNewChannelModal] = useState(false);
   const [searchedContacts, setSearchedContacts] = useState([]);
   const [allContacts, setAllContacts] = useState([]);
@@ -53,31 +50,28 @@ const Channel = () => {
     }
   }, []);
 
-  const searchContacts = async (searchTerm) => {
+  const createChannel = async () => {
     try {
-      if (searchTerm.length > 0) {
+      if (channelName.length > 0 && selectedContacts.length > 0) {
         const response = await apiClient.post(
-          SEARCH_CONTACT_ROUTES,
-          { searchTerm },
+          CREATE_CHANNEL_ROUTE,
+          {
+            name: channelName,
+            members: selectedContacts.map((contact) => contact.value),
+          },
           { withCredentials: true }
         );
 
-        if (response.status === 200 && response.data.contacts) {
-          setSearchedContacts(response.data.contacts);
+        if (response.status === 201) {
+          setChannelName("");
+          setSelectedContacts([]);
+          setNewChannelModal(false);
+          addChannel(response.data.channel);
         }
-      } else {
-        setSearchedContacts([]);
       }
     } catch (err) {
       console.log(err);
     }
-  };
-
-  const selectNewContact = (contact) => {
-    setNewChannelModal(false);
-    setSelectedChatType("contact");
-    setSelectedChatData(contact);
-    setSearchedContacts([]);
   };
 
   return (
@@ -116,17 +110,12 @@ const Channel = () => {
               placeholder="Search Contacts"
               value={selectedContacts}
               onChange={setSelectedContacts}
-              emptyIndicator={
-                <p className="text-center text-lg leading-10 text-gray-600">
-                  No results
-                </p>
-              }
             />
           </div>
           <div>
             <Button
               className="w-full bg-purple-700 hover:bg-purple-900 transition-all duration-300"
-              onClick={Channel}
+              onClick={createChannel}
             >
               Create Channel
             </Button>
