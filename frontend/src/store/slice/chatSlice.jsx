@@ -52,4 +52,19 @@ export const createChatSlice = (set, get) => ({
 
     set({ channels: [...channels, channel] });
   },
+  addChannelInChannelList: (message) => {
+    const channels = get().channels;
+    const data = channels.find((channel) => channel._id === message.channelId);
+    const index = channels.findIndex(
+      (channel) => channel._id === message.channelId
+    );
+
+    console.log("data", data);
+    console.log("index", index);
+
+    if (index !== -1 && index !== undefined) {
+      channels.splice(index, 1);
+      channels.unshift(data);
+    }
+  },
 });
