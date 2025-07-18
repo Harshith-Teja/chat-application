@@ -21,6 +21,7 @@ const MessageBar = () => {
     setFileUploadProgress,
   } = useAppStore();
   const socket = useSocket();
+  const sendButtonRef = useRef();
 
   const handleAddEmoji = (emoji) => {
     setMessage((msg) => msg + emoji.emoji);
@@ -111,6 +112,13 @@ const MessageBar = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendButtonRef.current.click();
+    }
+  };
+
   return (
     <section className="h-[10vh] bg-[#1c1d25] flex justify-center items-center px-8 mb-6 gap-6">
       <article className="flex-1 flex bg-[#2a2b33] rounded-md items-center gap-5 pr-5">
@@ -120,6 +128,7 @@ const MessageBar = () => {
           placeholder="Enter message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <button
           className="text-neutral-500 focus:border-none focus:text-white duration-300 transition-all"
@@ -153,6 +162,7 @@ const MessageBar = () => {
       <button
         className="bg-[#8417ff] rounded-md flex items-center justify-center p-5  focus:border-none hover:bg-[#741bda] focus focus:outline-none focus:text-white duration-300 transition-all"
         onClick={handleSendMessage}
+        ref={sendButtonRef}
       >
         <IoSend className="text-2xl" />
       </button>
