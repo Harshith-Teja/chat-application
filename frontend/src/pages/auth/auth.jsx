@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { IoIosChatbubbles } from "react-icons/io";
-import background from "@/assets/image.png";
+import background from "@/assets/Login-image.png";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
