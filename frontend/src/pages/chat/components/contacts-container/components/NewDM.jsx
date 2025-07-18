@@ -21,6 +21,7 @@ import { HOST, SEARCH_CONTACT_ROUTES } from "@/utils/constants";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useAppStore } from "@/store/store";
+import logo from "@/assets/HolaChat-logo-transparent.png";
 
 const NewDM = () => {
   const { setSelectedChatType, setSelectedChatData } = useAppStore();
@@ -127,15 +128,14 @@ const NewDM = () => {
           )}
           {searchedContacts.length <= 0 && (
             <div className="flex-1 md:bg-[#1c1d25] md:flex mt-5 md:mt-0 flex-col justify-center items-center hidden duration-1000 transition-all">
-              <Lottie
-                isClickToPauseDisabled={true}
-                height={100}
-                width={100}
-                options={animationDefaultOptions}
+              <img
+                src={logo}
+                alt="logo"
+                className="h-[200px] w-[300px] object-cover"
               />
               <div className="text-opacity-80 text-white flex flex-col gap-5 items-center mt-5 lg:text-2xl text-xl transition-all duration-300 text-center">
                 <h3 className="poppins-medium">
-                  Hi<span className="text-purple-500">!</span> Search new
+                  Hi<span className="text-purple-500">!</span> Search a new
                   <span className="text-purple-500"> Contact</span>
                 </h3>
               </div>
