@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import victory from "@/assets/victory.svg";
 import { IoIosChatbubbles } from "react-icons/io";
 import background from "@/assets/image.png";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
