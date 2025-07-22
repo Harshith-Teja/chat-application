@@ -2,9 +2,9 @@ import { useAppStore } from "@/store/store";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import ContactsContainer from "./components/contacts-container/contactsContainer";
-import EmptyChatContainer from "./components/empty-chat-container/emptyChatContainer";
-import ChatContainer from "./components/chat-container/chatContainer";
+import ContactsContainer from "./components/contacts-container/contactsContainer.jsx";
+import EmptyChatContainer from "./components/empty-chat-container/emptyChatContainer.jsx";
+import ChatContainer from "./components/chat-container/chatContainer.jsx";
 
 const Chat = () => {
   const {
