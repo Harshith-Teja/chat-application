@@ -4,7 +4,7 @@ import { verifyToken } from "../middleware/authMiddleware.js";
 import multer from "multer";
 
 const messageRoutes = Router();
-const upload = multer({ dest: "/uploads/files" });
+const upload = multer({ dest: "uploads/files" });
 
 messageRoutes.post("/get-messages", verifyToken, getMessages);
 messageRoutes.post(

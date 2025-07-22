@@ -133,7 +133,7 @@ export const addProfileImage = async (req, res, next) => {
     }
 
     const date = Date.now();
-    let filePath = "uploads/profiles/" + date + req.file.originalname;
+    let filePath = "./uploads/profiles/" + date + req.file.originalname;
     renameSync(req.file.path, filePath);
 
     const updatedUser = await User.findByIdAndUpdate(

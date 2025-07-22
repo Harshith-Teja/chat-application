@@ -28,7 +28,7 @@ export const uploadFile = async (req, res, next) => {
     if (!req.file) return res.status(400).send("File is required");
 
     const date = Date.now();
-    let fileDir = `uploads/files/${date}`;
+    let fileDir = `./uploads/files/${date}`;
     let fileName = `${fileDir}/${req.file.originalname}`;
 
     mkdirSync(fileDir, { recursive: true });
