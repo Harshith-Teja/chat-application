@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import Lottie from "react-lottie";
-import { animationDefaultOptions } from "@/lib/utils";
+import { animationDefaultOptions, getColor } from "@/lib/utils";
 import apiClient from "@/lib/api-client";
 import { HOST, SEARCH_CONTACT_ROUTES } from "@/utils/constants";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
@@ -65,13 +65,13 @@ const NewDM = () => {
           />
         </TooltipTrigger>
         <TooltipContent className="bg-[#1c1b1e] border-none text-white">
-          Edit Profile
+          Select New Contact
         </TooltipContent>
       </Tooltip>
       <Dialog open={openNewContactModal} onOpenChange={setOpenNewContactModal}>
-        <DialogContent className="md:bg-[#1c1d25]">
+        <DialogContent className="bg-[#181920] border-none text-white w-[400px] h-[400px] flex flex-col">
           <DialogHeader>
-            <DialogTitle className="text-white">
+            <DialogTitle className="hidden">
               Please select a contact
             </DialogTitle>
             <DialogDescription></DialogDescription>
@@ -83,64 +83,64 @@ const NewDM = () => {
               onChange={(e) => searchContacts(e.target.value)}
             />
           </div>
-          {searchedContacts.length > 0 && (
-            <ScrollArea className="h-250px ">
-              <div className="flex flex-col gap-5">
-                {searchedContacts.map((contact) => (
-                  <div
-                    key={contact._id}
-                    className="flex gap-3 items-center cursor-pointer"
-                    onClick={() => selectNewContact(contact)}
-                  >
-                    <div className="flex gap-3 items-center justify-center">
-                      <div className="w-12 h-12 relative">
-                        <Avatar className="h-12 w-12 rounded-full overflow-hidden">
-                          {contact.image ? (
-                            <AvatarImage
-                              src={`${HOST}/${contact.image}`}
-                              alt="profile"
-                              className="object-cover w-full h-full bg-black text-white rounded-full"
-                            />
-                          ) : (
-                            <div
-                              className={`uppercase h-12 w-12 text-lg border-[1px] flex items-center justify-center text-white rounded-full ${contact.color}`}
-                            >
-                              {contact.firstName
-                                ? contact.firstName.charAt(0)
-                                : contact.email.charAt(0)}
-                            </div>
-                          )}
-                        </Avatar>
-                      </div>
-                      <div className="flex flex-col text-white">
-                        <span>
-                          {contact.firstName && contact.lastName
-                            ? `${contact.firstName} ${contact.lastName}`
-                            : ""}
-                        </span>
-                        <span className="text-xs">{contact.email}</span>
-                      </div>
-                    </div>
+
+          <ScrollArea className="h-250px ">
+            <div className="flex flex-col gap-5">
+              {searchedContacts.map((contact) => (
+                <div
+                  key={contact._id}
+                  className="flex gap-3 items-center cursor-pointer"
+                  onClick={() => selectNewContact(contact)}
+                >
+                  <div className="w-12 h-12 relative">
+                    <Avatar className="h-12 w-12 rounded-full overflow-hidden">
+                      {contact.image ? (
+                        <AvatarImage
+                          src={`${HOST}/${contact.image}`}
+                          alt="profile"
+                          className="object-cover w-full h-full bg-black text-white rounded-full"
+                        />
+                      ) : (
+                        <div
+                          className={`uppercase h-12 w-12 text-lg border-[1px] flex items-center justify-center text-white rounded-full ${getColor(
+                            contact.color
+                          )}`}
+                        >
+                          {contact.firstName
+                            ? contact.firstName.charAt(0)
+                            : contact.email.charAt(0)}
+                        </div>
+                      )}
+                    </Avatar>
                   </div>
-                ))}
-              </div>
-            </ScrollArea>
-          )}
-          {searchedContacts.length <= 0 && (
-            <div className="flex-1 md:bg-[#1c1d25] md:flex mt-5 md:mt-0 flex-col justify-center items-center hidden duration-1000 transition-all">
-              <img
-                src={logo}
-                alt="logo"
-                className="h-[200px] w-[300px] object-cover"
-              />
-              <div className="text-opacity-80 text-white flex flex-col gap-5 items-center mt-5 lg:text-2xl text-xl transition-all duration-300 text-center">
-                <h3 className="poppins-medium">
-                  Hi<span className="text-purple-500">!</span> Search a new
-                  <span className="text-purple-500"> Contact</span>
-                </h3>
-              </div>
+                  <div className="flex flex-col text-white">
+                    <span>
+                      {contact.firstName && contact.lastName
+                        ? `${contact.firstName} ${contact.lastName}`
+                        : ""}
+                    </span>
+                    <span className="text-xs">{contact.email}</span>
+                  </div>
+                </div>
+              ))}
+
+              {searchedContacts.length <= 0 && (
+                <div className="flex-1 md:flex mt-5 md:mt-0 flex-col justify-center items-center hidden duration-1000 transition-all">
+                  <img
+                    src={logo}
+                    alt="logo"
+                    className="h-[200px] w-[300px] object-cover"
+                  />
+                  <div className="text-opacity-80 text-white flex flex-col gap-5 items-center mt-5 lg:text-2xl text-xl transition-all duration-300 text-center">
+                    <h3 className="poppins-medium">
+                      Hi<span className="text-purple-500">!</span> Search a new
+                      <span className="text-purple-500"> Contact</span>
+                    </h3>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </>
