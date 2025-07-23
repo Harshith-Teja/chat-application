@@ -74,7 +74,7 @@ const MessageContainer = () => {
       if (selectedChatType === "contact") getMessages();
       else if (selectedChatType === "channel") getChannelMessages();
     }
-  }, [selectedChatData._id, selectedChatType]);
+  }, [selectedChatData, selectedChatType, setSelectedChatMessages]);
 
   useEffect(() => {
     if (scrollRef.current) {
