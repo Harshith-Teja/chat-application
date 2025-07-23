@@ -17,16 +17,13 @@ import apiClient from "@/lib/api-client";
 import {
   CREATE_CHANNEL_ROUTE,
   GET_ALL_CONTACTS_ROUTES,
-  HOST,
-  SEARCH_CONTACT_ROUTES,
 } from "@/utils/constants";
 import { useAppStore } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import MultipleSelector from "@/components/ui/multipleselect";
 
 const Channel = () => {
-  const { setSelectedChatType, setSelectedChatData, addChannel } =
-    useAppStore();
+  const { addChannel } = useAppStore();
   const [newChannelModal, setNewChannelModal] = useState(false);
   const [searchedContacts, setSearchedContacts] = useState([]);
   const [allContacts, setAllContacts] = useState([]);
