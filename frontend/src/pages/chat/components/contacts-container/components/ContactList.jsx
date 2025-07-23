@@ -8,7 +8,6 @@ const ContactList = ({ contacts, isChannel = false }) => {
   const {
     selectedChatData,
     setSelectedChatData,
-    selectedChatType,
     setSelectedChatType,
     setSelectedChatMessages,
   } = useAppStore();
@@ -41,7 +40,7 @@ const ContactList = ({ contacts, isChannel = false }) => {
                   <AvatarImage
                     src={`${HOST}/${contact.image}`}
                     alt="profile"
-                    className="object-cover w-full h-full bg-black text-white"
+                    className="bg-cover w-full h-full rounded-full"
                   />
                 ) : (
                   <div
