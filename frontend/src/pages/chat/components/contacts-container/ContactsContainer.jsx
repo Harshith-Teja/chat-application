@@ -33,6 +33,10 @@ const ContactsContainer = () => {
       }
     };
 
+    getContacts();
+  }, [setDirectMessagesContacts]);
+
+  useEffect(() => {
     const getChannels = async () => {
       const response = await apiClient.get(GET_USER_CHANNELS_ROUTE, {
         withCredentials: true,
@@ -44,9 +48,8 @@ const ContactsContainer = () => {
       }
     };
 
-    getContacts();
     getChannels();
-  }, []);
+  }, [setChannels]);
 
   return (
     <article className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] bg-[#1b1c24] border-r-2 border-[#2f303b] w-full">
