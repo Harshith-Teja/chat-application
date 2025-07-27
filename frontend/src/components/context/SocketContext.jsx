@@ -37,7 +37,7 @@ export const SocketProvider = ({ children }) => {
           (selectedChatData._id === message.sender._id ||
             selectedChatData._id === message.receiver._id)
         ) {
-          console.log("message received", message);
+          //  console.log("message received", message);
           addMessage(message);
         }
         // addContactsInDMContacts(message);
