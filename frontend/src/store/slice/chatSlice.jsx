@@ -52,12 +52,15 @@ export const createChatSlice = (set, get) => ({
 
     set({ channels: [...channels, channel] });
   },
-  addChannelInChannelList: (message) => {
-    const channels = get().channels;
+  /* addChannelInChannelList: (message) => {
+     const channels = get().channels;
     const data = channels.find((channel) => channel._id === message.channelId);
     const index = channels.findIndex(
       (channel) => channel._id === message.channelId
     );
+
+    console.log("channels in slice", message.channelId);
+    console.log("channels in slice- channels", channels);
 
     if (index !== -1 && index !== undefined) {
       channels.splice(index, 1);
@@ -65,7 +68,7 @@ export const createChatSlice = (set, get) => ({
     }
   },
   addContactsInDMContacts: (message) => {
-    const userId = get().userInfo.id;
+     const userId = get().userInfo.id;
     const fromId =
       message.sender._id === userId ? message.receiver._id : message.sender._id;
     const fromData =
@@ -77,6 +80,7 @@ export const createChatSlice = (set, get) => ({
 
     console.log({ data, index, dmContacts, userId, message, fromData });
 
+    console.log("dms in slice", dmContacts);
     if (index !== -1 && index !== undefined) {
       dmContacts.splice(index, 1);
       dmContacts.unshift(data);
@@ -84,6 +88,6 @@ export const createChatSlice = (set, get) => ({
       dmContacts.unshift(fromData);
     }
 
-    set({ directMessagesContacts: dmContacts });
-  },
+    set({ directMessagesContacts: dmContacts }); 
+  },*/
 });

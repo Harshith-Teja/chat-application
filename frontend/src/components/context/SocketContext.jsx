@@ -29,7 +29,7 @@ export const SocketProvider = ({ children }) => {
           selectedChatData,
           selectedChatType,
           addMessage,
-          addContactsInDMContacts,
+          // addContactsInDMContacts,
         } = useAppStore.getState();
 
         if (
@@ -40,7 +40,7 @@ export const SocketProvider = ({ children }) => {
           console.log("message received", message);
           addMessage(message);
         }
-        addContactsInDMContacts(message);
+        // addContactsInDMContacts(message);
       };
 
       const handleRecieveChannelMessage = (message) => {
@@ -48,7 +48,7 @@ export const SocketProvider = ({ children }) => {
           selectedChatData,
           selectedChatType,
           addMessage,
-          addChannelInChannelList,
+          // addChannelInChannelList,
         } = useAppStore.getState();
 
         if (
@@ -57,7 +57,7 @@ export const SocketProvider = ({ children }) => {
         ) {
           addMessage(message);
         }
-        addChannelInChannelList(message);
+        // addChannelInChannelList(message);
       };
 
       socket.current.on("receiveMessage", handleReceiveMessage);
