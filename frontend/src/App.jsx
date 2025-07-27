@@ -29,8 +29,6 @@ function App() {
         } else {
           setUserInfo(undefined);
         }
-
-        console.log({ response });
       } catch (err) {
         setUserInfo(undefined);
         console.log(err.message);
