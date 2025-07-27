@@ -56,7 +56,7 @@ export const getContactsForDmList = async (req, res, next) => {
               else: "$sender",
             },
           },
-          lastMessageTime: { $first: "$timestamp " },
+          lastMessageTime: { $first: "$timestamp" },
         },
       },
       {
