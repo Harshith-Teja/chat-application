@@ -3,7 +3,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import {
   Dialog,
@@ -22,10 +22,9 @@ import { useAppStore } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import MultipleSelector from "@/components/ui/multipleselect";
 
-const Channel = () => {
+const Channel = memo(() => {
   const { addChannel } = useAppStore();
   const [newChannelModal, setNewChannelModal] = useState(false);
-  const [searchedContacts, setSearchedContacts] = useState([]);
   const [allContacts, setAllContacts] = useState([]);
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [channelName, setChannelName] = useState("");
@@ -121,6 +120,6 @@ const Channel = () => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Channel;
