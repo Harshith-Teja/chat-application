@@ -1,56 +1,11 @@
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import ProfileInfo from "./components/ProfileInfo";
 import NewDM from "./components/NewDM";
-import apiClient from "@/lib/api-client";
-import {
-  GET_DM_CONTACTS_ROUTES,
-  GET_USER_CHANNELS_ROUTE,
-} from "@/utils/constants";
-import { useAppStore } from "@/store/store";
 import ContactList from "@/pages/chat/components/contacts-container/components/ContactList";
 import Channel from "./components/Channel";
+import ChannelList from "./components/ChannelList";
 
-const ContactsContainer = () => {
-  const {
-    directMessagesContacts,
-    setDirectMessagesContacts,
-    channels,
-    setChannels,
-  } = useAppStore();
-
-  useEffect(() => {
-    const getContacts = async () => {
-      const response = await apiClient.get(GET_DM_CONTACTS_ROUTES, {
-        withCredentials: true,
-      });
-
-      if (
-        JSON.stringify(directMessagesContacts) !==
-        JSON.stringify(response.data.contacts)
-      ) {
-        console.log(response.data.contacts);
-        setDirectMessagesContacts(response.data.contacts);
-      }
-    };
-
-    getContacts();
-  }, [setDirectMessagesContacts]);
-
-  useEffect(() => {
-    const getChannels = async () => {
-      const response = await apiClient.get(GET_USER_CHANNELS_ROUTE, {
-        withCredentials: true,
-      });
-
-      if (JSON.stringify(channels) !== JSON.stringify(response.data.channels)) {
-        console.log(response.data.channels);
-        setChannels(response.data.channels);
-      }
-    };
-
-    getChannels();
-  }, [setChannels]);
-
+const ContactsContainer = memo(() => {
   return (
     <article className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] bg-[#1b1c24] border-r-2 border-[#2f303b] w-full">
       <h1 className="pt-3">Chat App</h1>
@@ -60,7 +15,7 @@ const ContactsContainer = () => {
           <NewDM />
         </div>
         <div className="max-h-[38vh] overflow-y-auto scrollbar-hidden">
-          <ContactList contacts={directMessagesContacts} />
+          <ContactList />
         </div>
       </section>
       <section className="my-5">
@@ -69,13 +24,13 @@ const ContactsContainer = () => {
           <Channel />
         </div>
         <div className="max-h-[38vh] overflow-y-auto scrollbar-hidden">
-          <ContactList contacts={channels} isChannel={true} />
+          <ChannelList />
         </div>
       </section>
       <ProfileInfo />
     </article>
   );
-};
+});
 
 export default ContactsContainer;
 
