@@ -6,27 +6,28 @@ import {
   HOST,
 } from "@/utils/constants";
 import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import { BsDownload } from "react-icons/bs";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getColor } from "@/lib/utils";
+import { isEqual } from "lodash";
 
-const MessageContainer = () => {
+const MessageContainer = memo(() => {
   const scrollRef = useRef();
   const {
     selectedChatType,
     selectedChatData,
     userInfo,
-    selectedChatMessages,
-    setSelectedChatMessages,
     setIsDownloading,
     setFileDownloadProgress,
   } = useAppStore();
 
   const [showImage, setShowImage] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
+
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -39,11 +40,8 @@ const MessageContainer = () => {
           }
         );
 
-        if (
-          JSON.stringify(response.data.messages) !==
-          JSON.stringify(selectedChatMessages)
-        ) {
-          setSelectedChatMessages(response.data.messages);
+        if (!isEqual(response.data.messages, messages)) {
+          setMessages(response.data.messages);
         }
       } catch (err) {
         console.log(err);
@@ -59,11 +57,8 @@ const MessageContainer = () => {
           }
         );
 
-        if (
-          JSON.stringify(response.data.messages) !==
-          JSON.stringify(selectedChatMessages)
-        ) {
-          setSelectedChatMessages(response.data.messages);
+        if (!isEqual(response.data.messages, messages)) {
+          setMessages(response.data.messages);
         }
       } catch (err) {
         console.log(err);
@@ -74,13 +69,13 @@ const MessageContainer = () => {
       if (selectedChatType === "contact") getMessages();
       else if (selectedChatType === "channel") getChannelMessages();
     }
-  }, [selectedChatData, selectedChatType, setSelectedChatMessages]);
+  }, [selectedChatData, selectedChatType]);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "auto" });
     }
-  }, [selectedChatMessages]);
+  }, [messages]);
 
   const downloadFile = async (url) => {
     try {
@@ -274,23 +269,25 @@ const MessageContainer = () => {
   const renderMessages = () => {
     let lastDate = null;
 
-    return selectedChatMessages.map((message) => {
-      const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
-      const showDate = messageDate !== lastDate;
-      lastDate = messageDate;
+    return messages.length > 0
+      ? messages.map((message) => {
+          const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
+          const showDate = messageDate !== lastDate;
+          lastDate = messageDate;
 
-      return (
-        <section key={message._id}>
-          {showDate && (
-            <div className="text-center text-gray-500 my-2">
-              {moment(message.timestamp).format("LL")}
-            </div>
-          )}
-          {selectedChatType === "contact" && renderDmMessages(message)}
-          {selectedChatType === "channel" && renderChannelMessages(message)}
-        </section>
-      );
-    });
+          return (
+            <section key={message._id}>
+              {showDate && (
+                <div className="text-center text-gray-500 my-2">
+                  {moment(message.timestamp).format("LL")}
+                </div>
+              )}
+              {selectedChatType === "contact" && renderDmMessages(message)}
+              {selectedChatType === "channel" && renderChannelMessages(message)}
+            </section>
+          );
+        })
+      : null;
   };
 
   return (
@@ -327,6 +324,6 @@ const MessageContainer = () => {
       </div>
     </section>
   );
-};
+});
 
 export default MessageContainer;
