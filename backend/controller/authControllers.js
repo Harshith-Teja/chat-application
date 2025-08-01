@@ -84,6 +84,7 @@ export const getUserInfo = async (req, res, next) => {
         profileSetup: userData.profileSetup,
         firstName: userData.firstName,
         lastName: userData.lastName,
+        image: userData.image,
         color: userData.color,
       },
     });
