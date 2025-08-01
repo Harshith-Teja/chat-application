@@ -18,7 +18,8 @@ import {
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { userInfo, setUserInfo } = useAppStore();
+  const userInfo = useAppStore((state) => state.userInfo);
+  const setUserInfo = useAppStore((state) => state.setUserInfo);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [image, setImage] = useState(null);
