@@ -1,4 +1,4 @@
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   TooltipTrigger,
   Tooltip,
@@ -14,7 +14,8 @@ import { IoPowerSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 const ProfileInfo = () => {
-  const { userInfo, setUserInfo } = useAppStore();
+  const userInfo = useAppStore((state) => state.userInfo);
+  const setUserInfo = useAppStore((state) => state.setUserInfo);
   const navigate = useNavigate();
 
   const logOut = async () => {
