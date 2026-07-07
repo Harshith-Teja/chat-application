@@ -57,34 +57,45 @@ const Auth = () => {
 
   const handleLogin = async () => {
     if (validateLogin()) {
-      const response = await apiClient.post(
-        LOGIN_ROUTE,
-        { email, password },
-        { withCredentials: true }
-      );
-      console.log(response);
+      try {
+        const response = await apiClient.post(
+          LOGIN_ROUTE,
+          { email, password },
+          { withCredentials: true }
+        );
+        console.log(response);
 
-      if (response.data.user.id) {
-        setUserInfo(response.data.user);
-        if (response.data.user.profileSetup)
-          navigate("/chat"); //if profile is already setup, move to chat page
-        else navigate("/profile");
+        if (response.data.user.id) {
+          setUserInfo(response.data.user);
+          if (response.data.user.profileSetup)
+            navigate("/chat"); //if profile is already setup, move to chat page
+          else navigate("/profile");
+        }
+      } catch (err) {
+        toast.error(
+          err.response.data.message ||
+            "Login failed. Please check your credentials."
+        );
       }
     }
   };
 
   const handleSignup = async () => {
     if (validateSignup()) {
-      const response = await apiClient.post(
-        SIGNUP_ROUTE,
-        { email, password },
-        { withCredentials: true }
-      );
-      console.log(response);
+      try {
+        const response = await apiClient.post(
+          SIGNUP_ROUTE,
+          { email, password },
+          { withCredentials: true }
+        );
+        console.log(response);
 
-      if (response.status === 201) {
-        setUserInfo(response.data.user);
-        navigate("/profile"); //once user is successfully created, move to the profile page to set up profile
+        if (response.status === 201) {
+          setUserInfo(response.data.user);
+          navigate("/profile"); //once user is successfully created, move to the profile page to set up profile
+        }
+      } catch (err) {
+        toast.error(err.response.data.message || "Signup failed");
       }
     }
   };
