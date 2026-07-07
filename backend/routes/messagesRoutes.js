@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getMessages, uploadFile } from "../controller/messagesController.js";
+import {
+  getMessages,
+  summarizeMissedMessages,
+  uploadFile,
+} from "../controller/messagesController.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
 import multer from "multer";
 
@@ -12,6 +16,11 @@ messageRoutes.post(
   verifyToken,
   upload.single("file"),
   uploadFile
+);
+messageRoutes.post(
+  "/summarize/:channelId",
+  verifyToken,
+  summarizeMissedMessages
 );
 
 export default messageRoutes;
