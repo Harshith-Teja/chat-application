@@ -1,4 +1,5 @@
 import Message from "../model/messagesModel.js";
+import Channel from "../model/channelModel.js";
 import OpenAI from "openai";
 import { mkdirSync, renameSync } from "fs";
 import dotenv from "dotenv";
@@ -61,15 +62,23 @@ export const summarizeMissedMessages = async (req, res) => {
       });
     }
 
-    console.log("1");
-    //Query MongoDB for missed messages
-    const missedMessages = await Message.find({
-      channelId: channelId,
-      createdAt: { $gt: new Date(lastReadTimestamp) },
-    }).sort({ createdAt: 1 }); // Sort chronologically so the chat makes sense
+    console.log("lastReadTimestamp", lastReadTimestamp);
 
-    console.log("2");
-    if (missedMessages.length === 0) {
+    //Query the Channel and populate only the missed messages
+    const channel = await Channel.findById(channelId).populate({
+      path: "messages",
+      match: { timestamp: { $gt: new Date(lastReadTimestamp) } },
+      options: { sort: { timestamp: 1 } }, // Sort chronologically so the chat makes sense
+    });
+
+    if (!channel) {
+      return res.status(404).json({ error: "Channel not found." });
+    }
+
+    const missedMessages = channel.messages;
+
+    console.log("missedMsg", missedMessages);
+    if (!missedMessages || missedMessages.length === 0) {
       return res
         .status(200)
         .json({ summary: "You have no missed messages to summarize." });
@@ -94,7 +103,6 @@ export const summarizeMissedMessages = async (req, res) => {
         "\n...[Messages truncated for length]";
     }
 
-    console.log("3");
     //Prompt Engineering & API Call
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Fast and highly cost-effective for simple summarization
@@ -102,7 +110,7 @@ export const summarizeMissedMessages = async (req, res) => {
         {
           role: "system",
           content:
-            "You are a highly efficient assistant. Summarize the following chat log concisely. Focus on key decisions, important updates, and action items. Do not use conversational filler. Keep it under 4 sentences.",
+            "You are a highly efficient assistant. Summarize the following chat log concisely. Focus on key decisions, important updates, and action items. Do NOT use meta-commentary (e.g., avoid phrases like 'No decisions were made', 'The chat shows', or 'The user inquired about'). Simply state the facts of the conversation directly. Keep it under 4 sentences.",
         },
         {
           role: "user",
@@ -114,7 +122,7 @@ export const summarizeMissedMessages = async (req, res) => {
     });
 
     const summary = response.choices[0].message.content;
-    console.log("summary", summary);
+
     return res.status(200).json({ summary });
   } catch (error) {
     console.error("Error generating channel summary:", error);
