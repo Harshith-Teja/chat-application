@@ -13,8 +13,23 @@ import { useEffect, useState } from "react";
 import apiClient from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constants";
 
+const PrivateRoute = ({ children }) => {
+  const { userInfo } = useAppStore();
+  const isAuthenticated = !!userInfo;
+
+  return isAuthenticated ? children : <Navigate to="/auth" />;
+};
+
+const AuthRoute = ({ children }) => {
+  const { userInfo } = useAppStore();
+  const isAuthenticated = !!userInfo;
+
+  return isAuthenticated ? <Navigate to="/chat" /> : children;
+};
+
 function App() {
-  const { userInfo, setUserInfo } = useAppStore();
+  const userInfo = useAppStore((state) => state.userInfo);
+  const setUserInfo = useAppStore((state) => state.setUserInfo);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -42,20 +57,6 @@ function App() {
   }, [userInfo, setUserInfo]);
 
   if (loading) return <div>Loading...</div>;
-
-  const PrivateRoute = ({ children }) => {
-    const { userInfo } = useAppStore();
-    const isAuthenticated = !!userInfo;
-
-    return isAuthenticated ? children : <Navigate to="/auth" />;
-  };
-
-  const AuthRoute = ({ children }) => {
-    const { userInfo } = useAppStore();
-    const isAuthenticated = !!userInfo;
-
-    return isAuthenticated ? <Navigate to="/chat" /> : children;
-  };
 
   return (
     <Router>
