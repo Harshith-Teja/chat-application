@@ -23,15 +23,18 @@ const MessageContainer = memo(() => {
     userInfo,
     setIsDownloading,
     setFileDownloadProgress,
+    selectedChatMessages,
+    setSelectedChatMessages,
+    summary,
+    setSummary,
+    isSummaryLoading,
+    setIsSummaryLoading,
   } = useAppStore();
 
   const [showImage, setShowImage] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
 
-  const [messages, setMessages] = useState([]);
   const [lastReadTimeStamp, setLastReadTimeStamp] = useState(null);
-  const { summary, setSummary, isSummaryLoading, setIsSummaryLoading } =
-    useAppStore();
 
   useEffect(() => {
     const getMessages = async () => {
@@ -44,8 +47,8 @@ const MessageContainer = memo(() => {
           }
         );
 
-        if (!isEqual(response.data.messages, messages)) {
-          setMessages(response.data.messages);
+        if (response.data.messages) {
+          setSelectedChatMessages(response.data.messages);
         }
       } catch (err) {
         console.log(err);
@@ -61,8 +64,8 @@ const MessageContainer = memo(() => {
           }
         );
 
-        if (!isEqual(response.data.messages, messages)) {
-          setMessages(response.data.messages);
+        if (response.data.messages) {
+          setSelectedChatMessages(response.data.messages);
         }
       } catch (err) {
         console.log(err);
@@ -79,7 +82,7 @@ const MessageContainer = memo(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "auto" });
     }
-  }, [messages]);
+  }, [selectedChatMessages]);
 
   useEffect(() => {
     //managing last read timestamp for channels
@@ -114,15 +117,10 @@ const MessageContainer = memo(() => {
         }
       );
 
-      const data = await response.json();
-      if (response.ok) {
-        setSummary(data?.summary);
-      } else {
-        console.error(
-          "Failed to fetch summary",
-          data?.error || "Unknown error"
-        );
-      }
+      console.log(response);
+      const summary = response?.data?.summary;
+
+      setSummary(summary);
     } catch (err) {
       console.error("Failed to fetch summary", err);
     } finally {
@@ -267,35 +265,6 @@ const MessageContainer = memo(() => {
           </div>
         )}
 
-        {lastReadTimeStamp && !summary && (
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
-            <button
-              onClick={handleSummarize}
-              disabled={isSummaryLoading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-md transition-all"
-            >
-              {isSummaryLoading
-                ? "Generating Summary..."
-                : "✨ Summarize Missed Messages"}
-            </button>
-          </div>
-        )}
-
-        {summary && (
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mx-4 my-2 rounded-md shadow-sm">
-            <div className="flex">
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-yellow-800">
-                  AI Summary (Since you've been gone)
-                </h3>
-                <div className="mt-2 text-sm text-yellow-700">
-                  <p>{summary}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
         {message.messageType === "text" && (
           <div
             className={`${
@@ -352,8 +321,8 @@ const MessageContainer = memo(() => {
   const renderMessages = () => {
     let lastDate = null;
 
-    return messages.length > 0
-      ? messages.map((message) => {
+    return selectedChatMessages.length > 0
+      ? selectedChatMessages.map((message) => {
           const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
           const showDate = messageDate !== lastDate;
           lastDate = messageDate;
@@ -375,6 +344,45 @@ const MessageContainer = memo(() => {
 
   return (
     <section className="flex-1 overflow-y-auto scrollbar-hidden p-4 md:w-[65vw] lg:w-[70vw] xl:w-[80vw] w-full">
+      {/* Summarize Button (Pinned to top) */}
+      {selectedChatType === "channel" && lastReadTimeStamp && !summary && (
+        <div className="sticky top-0 z-20 flex justify-center mb-4">
+          <button
+            onClick={handleSummarize}
+            disabled={isSummaryLoading}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-md transition-all"
+          >
+            {isSummaryLoading
+              ? "Generating Summary..."
+              : "✨ Summarize Missed Messages"}
+          </button>
+        </div>
+      )}
+
+      {/* Summary Result Banner (Pinned to top) */}
+      {selectedChatType === "channel" && summary && (
+        <div className="sticky top-0 z-20 bg-yellow-50 border-l-4 border-yellow-400 p-4 mx-4 mb-4 rounded-md shadow-sm flex flex-row justify-between items-start gap-4">
+          {/* Left side: Text Content */}
+          <div className="flex-1 ml-3">
+            <h3 className="text-sm font-medium text-yellow-800">
+              AI Summary (Since you've been gone)
+            </h3>
+            <div className="mt-2 text-sm text-yellow-700">
+              <p>{summary}</p>
+            </div>
+          </div>
+
+          {/* Right side: Close Button */}
+          <button
+            onClick={() => setSummary(null)}
+            className="text-yellow-800 hover:text-yellow-900 bg-yellow-400/20 hover:bg-yellow-400/40 rounded-full p-1 transition-all duration-300 shrink-0"
+            title="Dismiss summary"
+          >
+            <IoIosCloseCircleOutline className="text-2xl" />
+          </button>
+        </div>
+      )}
+
       {renderMessages()}
       <div ref={scrollRef}>
         {showImage && (
