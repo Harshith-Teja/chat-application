@@ -3,6 +3,7 @@ import { useAppStore } from "@/store/store";
 import {
   GET_ALL_MESSAGES_ROUTE,
   GET_CHANNEL_MESSAGES,
+  GET_SUMMARY,
   HOST,
 } from "@/utils/constants";
 import moment from "moment";
@@ -28,6 +29,9 @@ const MessageContainer = memo(() => {
   const [imageUrl, setImageUrl] = useState(null);
 
   const [messages, setMessages] = useState([]);
+  const [lastReadTimeStamp, setLastReadTimeStamp] = useState(null);
+  const { summary, setSummary, isSummaryLoading, setIsSummaryLoading } =
+    useAppStore();
 
   useEffect(() => {
     const getMessages = async () => {
@@ -76,6 +80,55 @@ const MessageContainer = memo(() => {
       scrollRef.current.scrollIntoView({ behavior: "auto" });
     }
   }, [messages]);
+
+  useEffect(() => {
+    //managing last read timestamp for channels
+
+    if (selectedChatType === "channel" && selectedChatData._id) {
+      //check if we have a prev timestamp for this specific channel
+      const storedTime = localStorage.getItem(
+        `lastRead_${selectedChatData._id}`
+      );
+
+      if (storedTime) {
+        setLastReadTimeStamp(storedTime);
+      }
+
+      //cleanup: when user leaves this channel, save the current time
+      return () => {
+        const currentTime = new Date().toISOString();
+        localStorage.setItem(`lastRead_${selectedChatData._id}`, currentTime);
+        setSummary(null);
+      };
+    }
+  }, [selectedChatData, selectedChatType, setSummary]);
+
+  const handleSummarize = async () => {
+    setIsSummaryLoading(true);
+    try {
+      const response = await apiClient.post(
+        `${GET_SUMMARY}/${selectedChatData._id}`,
+        { lastReadTimestamp: lastReadTimeStamp },
+        {
+          withCredentials: true,
+        }
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        setSummary(data?.summary);
+      } else {
+        console.error(
+          "Failed to fetch summary",
+          data?.error || "Unknown error"
+        );
+      }
+    } catch (err) {
+      console.error("Failed to fetch summary", err);
+    } finally {
+      setIsSummaryLoading(false);
+    }
+  };
 
   const downloadFile = async (url) => {
     try {
@@ -213,6 +266,36 @@ const MessageContainer = memo(() => {
             {moment(message.timestamp).format("LT")}
           </div>
         )}
+
+        {lastReadTimeStamp && !summary && (
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
+            <button
+              onClick={handleSummarize}
+              disabled={isSummaryLoading}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-md transition-all"
+            >
+              {isSummaryLoading
+                ? "Generating Summary..."
+                : "✨ Summarize Missed Messages"}
+            </button>
+          </div>
+        )}
+
+        {summary && (
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mx-4 my-2 rounded-md shadow-sm">
+            <div className="flex">
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-yellow-800">
+                  AI Summary (Since you've been gone)
+                </h3>
+                <div className="mt-2 text-sm text-yellow-700">
+                  <p>{summary}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {message.messageType === "text" && (
           <div
             className={`${
