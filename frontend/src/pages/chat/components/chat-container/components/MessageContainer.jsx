@@ -87,7 +87,7 @@ const MessageContainer = memo(() => {
   useEffect(() => {
     //managing last read timestamp for channels
 
-    if (selectedChatType === "channel" && selectedChatData._id) {
+    if (selectedChatData._id) {
       //check if we have a prev timestamp for this specific channel
       const storedTime = localStorage.getItem(
         `lastRead_${selectedChatData._id}`
@@ -95,6 +95,8 @@ const MessageContainer = memo(() => {
 
       if (storedTime) {
         setLastReadTimeStamp(storedTime);
+      } else {
+        setLastReadTimeStamp(null); // Reset if opening a fresh chat
       }
 
       //cleanup: when user leaves this channel, save the current time
@@ -320,12 +322,33 @@ const MessageContainer = memo(() => {
 
   const renderMessages = () => {
     let lastDate = null;
+    let newMessagesLineRendered = false;
 
     return selectedChatMessages.length > 0
       ? selectedChatMessages.map((message) => {
           const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
           const showDate = messageDate !== lastDate;
           lastDate = messageDate;
+
+          // Check if the message is from someone else (we only want to show the "NEW MESSAGES" line for messages from others)
+          const isFromOtherUser =
+            selectedChatType === "channel"
+              ? message.sender._id !== userInfo.id
+              : message.sender === selectedChatData._id;
+
+          // Check if this specific message is unread
+          const isUnread =
+            lastReadTimeStamp &&
+            new Date(message.timestamp) > new Date(lastReadTimeStamp);
+
+          // Determine if we should show the line (only for the FIRST unread message)
+          const showNewMsgsLine =
+            isUnread && isFromOtherUser && !newMessagesLineRendered;
+
+          // If we are showing it now, flip the flag so it never shows again
+          if (showNewMsgsLine) {
+            newMessagesLineRendered = true;
+          }
 
           return (
             <section key={message._id}>
@@ -334,6 +357,17 @@ const MessageContainer = memo(() => {
                   {moment(message.timestamp).format("LL")}
                 </div>
               )}
+
+              {showNewMsgsLine && (
+                <div className="flex items-center justify-center my-4 px-10">
+                  <div className="h-[1px] flex-1 bg-cyan-500/50"></div>
+                  <span className="px-4 text-xs text-cyan-500 font-medium bg-[#1c1d25]">
+                    NEW MESSAGES
+                  </span>
+                  <div className="h-[1px] flex-1 bg-cyan-500/50"></div>
+                </div>
+              )}
+
               {selectedChatType === "contact" && renderDmMessages(message)}
               {selectedChatType === "channel" && renderChannelMessages(message)}
             </section>
