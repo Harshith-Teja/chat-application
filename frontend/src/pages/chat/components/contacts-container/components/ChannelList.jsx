@@ -2,16 +2,16 @@ import { useAppStore } from "@/store/store";
 import React, { memo, useEffect, useState } from "react";
 import apiClient from "@/lib/api-client";
 import { GET_USER_CHANNELS_ROUTE } from "@/utils/constants";
-import { isEqual } from "lodash";
 
 const ChannelList = memo(() => {
-  const [channels, setChannels] = useState([]);
-
   const {
+    channels,
+    setChannels,
     selectedChatData,
     setSelectedChatData,
     setSelectedChatType,
     setSelectedChatMessages,
+    clearUnreadCount,
   } = useAppStore();
 
   useEffect(() => {
@@ -20,17 +20,18 @@ const ChannelList = memo(() => {
         withCredentials: true,
       });
 
-      if (!isEqual(channels, response.data.channels)) {
+      if (response.data.channels) {
         setChannels(response.data.channels);
       }
     };
 
     getChannels();
-  }, []);
+  }, [setChannels]);
 
   const handleClick = (contact) => {
     setSelectedChatType("channel");
     setSelectedChatData(contact);
+    clearUnreadCount(contact._id, "channel"); //clear unread count when channel is selected
     if (selectedChatData && selectedChatData._id !== contact._id) {
       setSelectedChatMessages([]);
     }
@@ -49,11 +50,20 @@ const ChannelList = memo(() => {
             }`}
             onClick={() => handleClick(contact)}
           >
-            <div className="flex gap-5 items-center justify-start text-neutral-300">
-              <div className="bg-[#ffffff22] h-10 w-10 flex items-center justify-center rounded-full">
-                #
+            <div className="flex gap-5 items-center justify-between text-neutral-300 w-full pr-10">
+              <div className="flex gap-5 items-center">
+                <div className="bg-[#ffffff22] h-10 w-10 flex items-center justify-center rounded-full">
+                  #
+                </div>
+                <span>{contact.name}</span>
               </div>
-              <span>{contact.name}</span>
+
+              {/* Unread badge UI */}
+              {contact.unreadCount > 0 && (
+                <span className="bg-pink-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  {contact.unreadCount}
+                </span>
+              )}
             </div>
           </div>
         ))}
