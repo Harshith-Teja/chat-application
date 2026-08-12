@@ -171,7 +171,7 @@ const MessageContainer = memo(() => {
       <div
         className={`${
           message.sender === selectedChatData._id ? "text-left" : "text-right"
-        }`}
+        } text-lg`}
       >
         {message.messageType === "text" && (
           <div
@@ -179,9 +179,12 @@ const MessageContainer = memo(() => {
               message.sender !== selectedChatData._id
                 ? "bg-[#8417ff]/5 text-[#8417ff] border-[#8417ff]/50"
                 : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20"
-            } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+            } border inline-flex items-end p-2 rounded my-1 max-w-[50%] break-words`}
           >
-            {message.content}
+            <span className="text-left">{message.content}</span>
+            <span className="text-[10px] text-white/50 ml-3 shirnk-0 mb-[-2px]">
+              {moment(message.timestamp).format("LT")}
+            </span>
           </div>
         )}
         {message.messageType === "file" && (
@@ -190,7 +193,7 @@ const MessageContainer = memo(() => {
               message.sender !== selectedChatData._id
                 ? "bg-[#8417ff]/5 text-[#8417ff] border-[#8417ff]/50"
                 : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20"
-            } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+            } border inline-flex flex-col p-3 rounded my-1 max-w-[50%] break-words`}
           >
             {checkIfImage(message.fileUrl) ? (
               <div
@@ -220,11 +223,11 @@ const MessageContainer = memo(() => {
                 </span>
               </div>
             )}
+            <span className="text-[10px] text-white/50 mt-1 self-end">
+              {moment(message.timestamp).format("LT")}
+            </span>
           </div>
         )}
-        <div className="text-xs text-gray-600">
-          {moment(message.timestamp).format("LT")}
-        </div>
       </div>
     );
   };
@@ -237,7 +240,7 @@ const MessageContainer = memo(() => {
         }`}
       >
         {message.sender._id !== userInfo.id ? (
-          <div className="flex items-center justify-start gap-3">
+          <div className="flex items-center justify-start gap-3 mb-1">
             <Avatar className="h-8 w-8 rounded-full overflow-hidden">
               {message.sender.image && (
                 <AvatarImage
@@ -272,10 +275,13 @@ const MessageContainer = memo(() => {
             className={`${
               message.sender._id === userInfo.id
                 ? "bg-[#8417ff]/5 text-[#8417ff] border-[#8417ff]/50"
-                : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20"
-            } border inline-block p-4 rounded my-1 max-w-[50%] break-words ml-9`}
+                : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20 ml-11"
+            } border inline-flex items-end p-2 px-3 rounded my-1 max-w-[50%] break-words`}
           >
-            {message.content}
+            <span className="text-left">{message.content}</span>
+            <span className="text-[10px] text-white/50 ml-3 shrink-0 mb-[-2px]">
+              {moment(message.timestamp).format("LT")}
+            </span>
           </div>
         )}
         {message.messageType === "file" && (
@@ -314,6 +320,9 @@ const MessageContainer = memo(() => {
                 </span>
               </div>
             )}
+            <span className="text-[10px] text-white/50 mt-1 self-end">
+              {moment(message.timestamp).format("LT")}
+            </span>
           </div>
         )}
       </div>
