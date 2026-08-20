@@ -13,7 +13,6 @@ import { BsDownload } from "react-icons/bs";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getColor } from "@/lib/utils";
-import { isEqual } from "lodash";
 
 const MessageContainer = memo(() => {
   const scrollRef = useRef();
@@ -166,10 +165,10 @@ const MessageContainer = memo(() => {
     return imageRegex.test(filePath);
   };
 
-  const renderDmMessages = (message) => {
+  const renderDmMessages = (message, showSenderDetails) => {
     return (
       <div
-        className={`${
+        className={`${showSenderDetails ? "mt-4" : "mt-0"} ${
           message.sender === selectedChatData._id ? "text-left" : "text-right"
         } text-lg`}
       >
@@ -177,8 +176,8 @@ const MessageContainer = memo(() => {
           <div
             className={`${
               message.sender !== selectedChatData._id
-                ? "bg-[#8417ff]/5 text-[#8417ff] border-[#8417ff]/50"
-                : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20"
+                ? "bg-gradient-to-r from-[#8417ff] to-[#9d4edd] text-white border-none inline-flex items-end p-3 px-4 rounded-2xl rounded-tr-sm my-1 shadow-md max-w-[50%] break-words"
+                : "bg-[#2a2b33] text-white/90 border border-white/5 inline-flex items-end p-3 px-4 rounded-2xl rounded-tl-sm my-1 shadow-sm max-w-[50%] break-words"
             } border inline-flex items-end p-2 rounded my-1 max-w-[50%] break-words`}
           >
             <span className="text-left">{message.content}</span>
@@ -191,8 +190,8 @@ const MessageContainer = memo(() => {
           <div
             className={`${
               message.sender !== selectedChatData._id
-                ? "bg-[#8417ff]/5 text-[#8417ff] border-[#8417ff]/50"
-                : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20"
+                ? "bg-gradient-to-r from-[#8417ff] to-[#9d4edd] text-white border-none inline-flex items-end p-3 px-4 rounded-2xl rounded-tr-sm my-1 shadow-md max-w-[50%] break-words"
+                : "bg-[#2a2b33] text-white/90 border border-white/5 inline-flex items-end p-3 px-4 rounded-2xl rounded-tl-sm my-1 shadow-sm max-w-[50%] break-words"
             } border inline-flex flex-col p-3 rounded my-1 max-w-[50%] break-words`}
           >
             {checkIfImage(message.fileUrl) ? (
@@ -211,12 +210,12 @@ const MessageContainer = memo(() => {
               </div>
             ) : (
               <div className="flex items-center justify-center gap-4">
-                <span className="text-white/8 text-3xl bg-black/20 rounded-full p-3">
+                <span className="text-white text-3xl bg-black/20 rounded-full p-3">
                   <FaFile />
                 </span>
                 <span>{message.fileUrl.split("/").pop()}</span>
                 <span
-                  className="text-white/8 text-2xl bg-black/20 hover:bg-black/50 cursor-pointer transition-all duration-300 rounded-full p-3"
+                  className="text-white text-2xl bg-black/20 hover:bg-black/50 cursor-pointer transition-all duration-300 rounded-full p-3"
                   onClick={() => downloadFile(message.fileUrl)}
                 >
                   <BsDownload />
@@ -232,14 +231,14 @@ const MessageContainer = memo(() => {
     );
   };
 
-  const renderChannelMessages = (message) => {
+  const renderChannelMessages = (message, showSenderDetails) => {
     return (
       <div
-        className={`mt-5 ${
+        className={`${showSenderDetails ? "mt-5" : "mt-0"} ${
           message.sender._id !== userInfo.id ? "text-left" : "text-right"
         }`}
       >
-        {message.sender._id !== userInfo.id ? (
+        {message.sender._id !== userInfo.id && showSenderDetails && (
           <div className="flex items-center justify-start gap-3 mb-1">
             <Avatar className="h-8 w-8 rounded-full overflow-hidden">
               {message.sender.image && (
@@ -260,13 +259,6 @@ const MessageContainer = memo(() => {
               </AvatarFallback>
             </Avatar>
             <span className="text-sm text-white/60">{`${message.sender.firstName} ${message.sender.lastName}`}</span>
-            <span className="text-xs text-white/60">
-              {moment(message.timestamp).format("LT")}
-            </span>
-          </div>
-        ) : (
-          <div className="text-xs text-white/60 mt-1">
-            {moment(message.timestamp).format("LT")}
           </div>
         )}
 
@@ -274,8 +266,8 @@ const MessageContainer = memo(() => {
           <div
             className={`${
               message.sender._id === userInfo.id
-                ? "bg-[#8417ff]/5 text-[#8417ff] border-[#8417ff]/50"
-                : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20 ml-11"
+                ? "bg-gradient-to-r from-[#8417ff] to-[#9d4edd] text-white border-none inline-flex items-end p-3 px-4 rounded-2xl rounded-tr-sm my-1 shadow-md max-w-[50%] break-words"
+                : "bg-[#2a2b33] text-white/90 border border-white/5 inline-flex items-end p-3 px-4 rounded-2xl rounded-tl-sm my-1 shadow-sm max-w-[50%] break-words"
             } border inline-flex items-end p-2 px-3 rounded my-1 max-w-[50%] break-words`}
           >
             <span className="text-left">{message.content}</span>
@@ -288,8 +280,8 @@ const MessageContainer = memo(() => {
           <div
             className={`${
               message.sender._id === userInfo.id
-                ? "bg-[#8417ff]/5 text-[#8417ff] border-[#8417ff]/50"
-                : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20"
+                ? "bg-gradient-to-r from-[#8417ff] to-[#9d4edd] text-white border-none inline-flex items-end p-3 px-4 rounded-2xl rounded-tr-sm my-1 shadow-md max-w-[50%] break-words"
+                : "bg-[#2a2b33] text-white/90 border border-white/5 inline-flex items-end p-3 px-4 rounded-2xl rounded-tl-sm my-1 shadow-sm max-w-[50%] break-words"
             } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
           >
             {checkIfImage(message.fileUrl) ? (
@@ -308,12 +300,12 @@ const MessageContainer = memo(() => {
               </div>
             ) : (
               <div className="flex items-center justify-center gap-4">
-                <span className="text-white/8 text-3xl bg-black/20 rounded-full p-3">
+                <span className="text-white text-3xl bg-black/20 rounded-full p-3">
                   <FaFile />
                 </span>
                 <span>{message.fileUrl.split("/").pop()}</span>
                 <span
-                  className="text-white/8 text-2xl bg-black/20 hover:bg-black/50 cursor-pointer transition-all duration-300 rounded-full p-3"
+                  className="text-white text-2xl bg-black/20 hover:bg-black/50 cursor-pointer transition-all duration-300 rounded-full p-3"
                   onClick={() => downloadFile(message.fileUrl)}
                 >
                   <BsDownload />
@@ -332,12 +324,23 @@ const MessageContainer = memo(() => {
   const renderMessages = () => {
     let lastDate = null;
     let newMessagesLineRendered = false;
+    let lastSenderId = null;
 
     return selectedChatMessages.length > 0
       ? selectedChatMessages.map((message) => {
           const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
           const showDate = messageDate !== lastDate;
           lastDate = messageDate;
+
+          //determine if we need to show the sender's avatar and name
+          const currSenderId =
+            selectedChatType === "channel"
+              ? message.sender._id
+              : message.sender;
+
+          //show details if it's a new day or if the sender has changed
+          const showSenderDetails = showDate || lastSenderId !== currSenderId;
+          lastSenderId = currSenderId;
 
           // Check if the message is from someone else (we only want to show the "NEW MESSAGES" line for messages from others)
           const isFromOtherUser =
@@ -377,8 +380,10 @@ const MessageContainer = memo(() => {
                 </div>
               )}
 
-              {selectedChatType === "contact" && renderDmMessages(message)}
-              {selectedChatType === "channel" && renderChannelMessages(message)}
+              {selectedChatType === "contact" &&
+                renderDmMessages(message, showSenderDetails)}
+              {selectedChatType === "channel" &&
+                renderChannelMessages(message, showSenderDetails)}
             </section>
           );
         })
