@@ -120,11 +120,11 @@ const MessageBar = () => {
   };
 
   return (
-    <section className="h-[10vh] bg-[#1c1d25] flex justify-center items-center px-8 mb-6 gap-6">
-      <article className="flex-1 flex bg-[#2a2b33] rounded-md items-center gap-5 pr-5">
+    <section className="h-[10vh] bg-[#13131a] flex justify-center items-center px-8 mb-6 gap-6">
+      <article className="flex-1 flex bg-[#2a2b33]/80 backdrop-blur-md border border-white/10 focus-within:border-[#8417ff]/50 focus-within:shadow-[0_0_15px_rgba(132,23,255,0.2)] rounded-full items-center gap-5 pr-5 transition-all duration-300">
         <input
           type="text"
-          className="flex-1 p-5 bg-transparent rounded-md focus:border-none focus:outline"
+          className="flex-1 p-5 bg-transparent rounded-full focus:border-none focus:outline"
           placeholder="Enter message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -160,7 +160,7 @@ const MessageBar = () => {
         </div>
       </article>
       <button
-        className="bg-[#8417ff] rounded-md flex items-center justify-center p-5  focus:border-none hover:bg-[#741bda] focus focus:outline-none focus:text-white duration-300 transition-all"
+        className="bg-gradient-to-r from-[#8417ff] to-[#9d4edd] rounded-full flex items-center justify-center p-4 focus:border-none hover:shadow-[0_0_20px_rgba(132,23,255,0.4)] focus:outline-none text-white duration-300 transition-all"
         onClick={handleSendMessage}
         ref={sendButtonRef}
       >
