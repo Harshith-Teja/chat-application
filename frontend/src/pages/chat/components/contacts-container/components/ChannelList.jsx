@@ -43,19 +43,21 @@ const ChannelList = memo(() => {
         channels.map((contact) => (
           <div
             key={contact._id}
-            className={`pl-10 py-2 transition-all duration-300 cursor-pointer ${
+            className={`px-4 py-3 ml-9 mr-6 my-1 transition-all duration-300 cursor-pointer rounded-xl ${
               selectedChatData && selectedChatData._id === contact._id
-                ? "bg-[#8417ff] hover:bg-[#8417ff]"
-                : "hover:bg-[#f1f1f111]"
+                ? "bg-[#8417ff]/15 border-l-4 border-[#8417ff] text-white shadow-[0_0_15px_rgba(132,23,255,0.1)]"
+                : "hover:bg-[#f1f1f111] border-l-4 border-transparent text-neutral-400"
             }`}
             onClick={() => handleClick(contact)}
           >
-            <div className="flex gap-5 items-center justify-between text-neutral-300 w-full pr-10">
+            <div className="flex gap-4 items-center justify-between text-neutral-300 w-full">
               <div className="flex gap-5 items-center">
                 <div className="bg-[#ffffff22] h-10 w-10 flex items-center justify-center rounded-full">
                   #
                 </div>
-                <span>{contact.name}</span>
+                <span className="font-medium text-white/90 capitalize tracking-wide truncate">
+                  {contact.name}
+                </span>
               </div>
 
               {/* Unread badge UI */}
