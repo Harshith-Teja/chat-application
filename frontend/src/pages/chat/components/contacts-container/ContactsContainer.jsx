@@ -33,7 +33,7 @@ const ContactsContainer = memo(() => {
           <Title text="Direct Messages" />
           <NewDM />
         </div>
-        <div className="max-h-[38vh] overflow-y-auto scrollbar-hidden">
+        <div className="max-h-[38vh] overflow-y-auto slim-scrollbar">
           <ContactList />
         </div>
       </section>
@@ -42,7 +42,7 @@ const ContactsContainer = memo(() => {
           <Title text="Channels" />
           <Channel />
         </div>
-        <div className="max-h-[38vh] overflow-y-auto scrollbar-hidden">
+        <div className="max-h-[38vh] overflow-y-auto slim-scrollbar">
           <ChannelList />
         </div>
       </section>
