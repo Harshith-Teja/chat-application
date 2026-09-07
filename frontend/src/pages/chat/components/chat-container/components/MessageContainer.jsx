@@ -391,7 +391,7 @@ const MessageContainer = memo(() => {
   };
 
   return (
-    <section className="flex-1 overflow-y-auto scrollbar-hidden p-4 md:w-[65vw] lg:w-[70vw] xl:w-[80vw] w-full">
+    <section className="flex-1 overflow-y-auto slim-scrollbar p-4 md:w-[65vw] lg:w-[70vw] xl:w-[80vw] w-full pr-2">
       {/* Summarize Button (Pinned to top) */}
       {selectedChatType === "channel" && lastReadTimeStamp && !summary && (
         <div className="sticky top-0 z-20 flex justify-center mb-4">
@@ -409,13 +409,17 @@ const MessageContainer = memo(() => {
 
       {/* Summary Result Banner (Pinned to top) */}
       {selectedChatType === "channel" && summary && (
-        <div className="sticky top-0 z-20 bg-yellow-50 border-l-4 border-yellow-400 p-4 mx-4 mb-4 rounded-md shadow-sm flex flex-row justify-between items-start gap-4">
+        <div className="sticky top-0 z-20 mx-4 mb-4 mt-4 p-5 rounded-2xl bg-[#1c1d25]/80 backdrop-blur-xl border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.3)] flex flex-row justify-between items-start gap-4 overflow-hidden">
+          {/* Aesthetic Glow Effects */}
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#8417ff] to-[#9d4edd]"></div>
+          <div className="absolute -top-10 -left-10 w-32 h-32 bg-[#8417ff]/20 rounded-full blur-3xl pointer-events-none"></div>
+
           {/* Left side: Text Content */}
-          <div className="flex-1 ml-3">
-            <h3 className="text-sm font-medium text-yellow-800">
-              AI Summary (Since you've been gone)
+          <div className="flex-1 ml-2 relative z-10">
+            <h3 className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#8417ff] to-[#9d4edd] flex items-center gap-2 tracking-wide uppercase">
+              ✨ AI Summary
             </h3>
-            <div className="mt-2 text-sm text-yellow-700">
+            <div className="mt-3 text-sm text-white/80 leading-relaxed font-light">
               <p>{summary}</p>
             </div>
           </div>
@@ -423,7 +427,7 @@ const MessageContainer = memo(() => {
           {/* Right side: Close Button */}
           <button
             onClick={() => setSummary(null)}
-            className="text-yellow-800 hover:text-yellow-900 bg-yellow-400/20 hover:bg-yellow-400/40 rounded-full p-1 transition-all duration-300 shrink-0"
+            className="text-neutral-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full p-1.5 transition-all duration-300 shrink-0 relative z-10"
             title="Dismiss summary"
           >
             <IoIosCloseCircleOutline className="text-2xl" />
