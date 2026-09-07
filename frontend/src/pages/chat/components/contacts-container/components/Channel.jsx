@@ -76,7 +76,7 @@ const Channel = memo(() => {
         <TooltipTrigger>
           <button
             className="h-7 w-7 flex items-center justify-center rounded-md bg-[#2a2b33] hover:bg-[#8417ff] text-neutral-400 hover:text-white transition-colors duration-300 mr-6 shadow-sm"
-            onClick={() => setOpenNewContactModal(true)}
+            onClick={() => setNewChannelModal(true)}
           >
             <FaPlus className="text-sm" />
           </button>
@@ -86,7 +86,7 @@ const Channel = memo(() => {
         </TooltipContent>
       </Tooltip>
       <Dialog open={newChannelModal} onOpenChange={setNewChannelModal}>
-        <DialogContent className="md:bg-[#1c1d25]">
+        <DialogContent className="bg-[#181920] border-none text-white">
           <DialogHeader>
             <DialogTitle className="text-white">
               Please fill up the details for new channel
